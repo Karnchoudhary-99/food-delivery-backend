@@ -1,0 +1,11 @@
+# Elixir
+/_build/
+/deps/
+*.ez
+erl_crash.dump
+# Editors
+.idea/
+.vscode/
+*.swp
+# OS
+.DS_Store
