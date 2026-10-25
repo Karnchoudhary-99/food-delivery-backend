@@ -1,3 +1,1 @@
-defmodule FoodDeliveryBackendTestHelper do
-  ExUnit.start()
-end
+ExUnit.start()
