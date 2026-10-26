@@ -65,7 +65,8 @@ defmodule FoodDeliveryBackend.Order do
          {:ok, lines} <- non_empty_lines(attrs),
          {:ok, fee} <- non_neg_int(attrs, :delivery_fee_cents, 0),
          {:ok, min_order} <- non_neg_int(attrs, :min_order_cents, 0) do
-      items_total = Enum.reduce(lines, 0, fn line, acc -> acc + OrderLine.line_total_cents(line) end)
+      items_total =
+        Enum.reduce(lines, 0, fn line, acc -> acc + OrderLine.line_total_cents(line) end)
 
       if items_total < min_order do
         {:error, :below_minimum_order}

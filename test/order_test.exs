@@ -6,7 +6,12 @@ defmodule FoodDeliveryBackend.OrderTest do
 
   defp line(price \\ 120, quantity \\ 2) do
     {:ok, line} =
-      OrderLine.new(%{item_id: "m1", name: "Masala Dosa", unit_price_cents: price, quantity: quantity})
+      OrderLine.new(%{
+        item_id: "m1",
+        name: "Masala Dosa",
+        unit_price_cents: price,
+        quantity: quantity
+      })
 
     line
   end
