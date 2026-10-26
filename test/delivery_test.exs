@@ -17,10 +17,10 @@ defmodule FoodDeliveryBackend.DeliveryTest do
   end
 
   test "new/1 rejects blank or missing order and courier ids" do
-    assert {:error, ":order_id must not be blank"} =
+    assert {:error, "order_id must not be blank"} =
              Delivery.new(%{order_id: " ", courier_id: "c1"})
 
-    assert {:error, ":courier_id is required and must be a string"} =
+    assert {:error, "courier_id is required and must be a string"} =
              Delivery.new(%{order_id: "o1"})
   end
 

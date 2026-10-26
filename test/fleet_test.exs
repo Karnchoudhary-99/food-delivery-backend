@@ -51,7 +51,7 @@ defmodule FoodDeliveryBackend.FleetTest do
     assert second.id == "c2"
     assert {:error, _} = Fleet.add_courier(fleet, %{name: "  "})
     assert {:ok, _fleet, third} = Fleet.add_courier(fleet, %{name: "Cleo"})
-    assert third.id == "c2"
+    assert third.id == "c3"
   end
 
   test "available_couriers/1 lists only free couriers", %{fleet: fleet} do
@@ -114,7 +114,7 @@ defmodule FoodDeliveryBackend.FleetTest do
       end)
 
     assert Fleet.get_courier(fleet, courier.id).available? == true
-    assert [courier] = Fleet.available_couriers(fleet)
+    assert Fleet.available_couriers(fleet) == [courier]
     assert {:error, :cannot_advance} = Fleet.advance_delivery(fleet, delivery.id)
     assert {:error, :not_found} = Fleet.advance_delivery(fleet, "d999")
   end

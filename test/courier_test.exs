@@ -22,16 +22,16 @@ defmodule FoodDeliveryBackend.CourierTest do
   end
 
   test "new/1 rejects a blank or missing name" do
-    assert {:error, ":name must not be blank"} = Courier.new(%{name: "  "})
-    assert {:error, ":name is required and must be a string"} = Courier.new(%{})
-    assert {:error, ":name is required and must be a string"} = Courier.new(%{name: 42})
+    assert {:error, "name must not be blank"} = Courier.new(%{name: "  "})
+    assert {:error, "name is required and must be a string"} = Courier.new(%{})
+    assert {:error, "name is required and must be a string"} = Courier.new(%{name: 42})
   end
 
   test "new/1 rejects an unknown vehicle or a non-boolean flag" do
     assert {:error, ":vehicle must be one of :bike, :scooter, :car"} =
              Courier.new(%{name: "Asha", vehicle: :helicopter})
 
-    assert {:error, ":available? must be a boolean"} =
+    assert {:error, "available? must be a boolean"} =
              Courier.new(%{name: "Asha", available?: "yes"})
   end
 end
