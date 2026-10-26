@@ -75,11 +75,11 @@ defmodule FoodDeliveryBackend.OrderBookLifecycleTest do
   } do
     assert {:ok, book, first} = place(catalogue, dosa, dosa_id)
     assert {:ok, book, second} = place(catalogue, dosa, dosa_id, book)
-    assert {:ok, book, _cancelled} = OrderBook.cancel_order(book, second.id)
+    assert {:ok, book, cancelled} = OrderBook.cancel_order(book, second.id)
 
     assert [first.id, second.id] == book |> OrderBook.list_orders() |> Enum.map(& &1.id)
     assert [first] == OrderBook.list_orders_by_status(book, :placed)
-    assert [second] == OrderBook.list_orders_by_status(book, :cancelled)
+    assert [cancelled] == OrderBook.list_orders_by_status(book, :cancelled)
     assert [] == OrderBook.list_orders_by_status(book, :delivered)
     assert 2 == book |> OrderBook.list_orders_for_restaurant(dosa) |> length()
     assert [] == OrderBook.list_orders_for_restaurant(book, "r999")
