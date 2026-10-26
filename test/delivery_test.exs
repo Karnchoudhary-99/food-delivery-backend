@@ -36,6 +36,7 @@ defmodule FoodDeliveryBackend.DeliveryTest do
 
     assert length(delivery.history) == 4
     assert Enum.map(delivery.history, & &1.seq) == [1, 2, 3, 4]
+
     assert Enum.map(delivery.history, & &1.status) == [
              :assigned,
              :picked_up,
