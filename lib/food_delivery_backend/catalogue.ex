@@ -228,6 +228,7 @@ defmodule FoodDeliveryBackend.Catalogue do
   end
 
   defp matches_cuisine?(_restaurant, nil), do: true
+
   defp matches_cuisine?(restaurant, cuisine) do
     String.downcase(restaurant.cuisine) == cuisine
   end

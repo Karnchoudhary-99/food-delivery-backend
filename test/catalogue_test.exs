@@ -55,6 +55,7 @@ defmodule FoodDeliveryBackend.CatalogueTest do
     assert [^dosa, ^coffee] = Catalogue.list_menu_items(catalogue, restaurant.id)
     assert Catalogue.list_menu_items(catalogue, "r9") == []
     assert Catalogue.get_menu_item(catalogue, dosa.id).price_cents == 120
+
     assert {:error, :restaurant_not_found} =
              Catalogue.add_menu_item(catalogue, "r9", %{name: "X", price_cents: 10})
   end
@@ -116,6 +117,7 @@ defmodule FoodDeliveryBackend.CatalogueTest do
 
     assert [%{name: "Dosa House"}] = Catalogue.search_restaurants(catalogue, "dosa")
     assert [%{name: "Sushi Bar"}] = Catalogue.search_restaurants(catalogue, "JAPANESE")
+
     assert [%{name: "Burger Joint"}] =
              Catalogue.search_restaurants(catalogue, "", cuisine: "american")
 
