@@ -77,9 +77,8 @@ defmodule FoodDeliveryBackend.DeliveryTest do
     assert {:ok, cancelled} = Delivery.cancel(picked_up)
     assert cancelled.status == :cancelled
 
-    {:ok, in_transit} =
-      new_delivery() |> Delivery.advance() |> then(fn {:ok, d} -> Delivery.advance(d) end)
-
+    {:ok, picked_up} = Delivery.advance(new_delivery())
+    {:ok, in_transit} = Delivery.advance(picked_up)
     assert {:error, :cannot_cancel} = Delivery.cancel(in_transit)
   end
 end

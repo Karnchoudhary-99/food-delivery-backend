@@ -30,7 +30,8 @@ IO.puts("Order #{order.id} is #{order.status} and ready for a courier.")
 IO.puts("Assigned #{courier.name} (#{courier.vehicle}) to order #{order.id}.")
 
 {:ok, fleet, delivery} = Fleet.advance_delivery(fleet, delivery.id)
-{:ok, fleet, delivery} = Fleet.update_delivery_location(fleet, delivery.id, "Picked up at Dosa House")
+{:ok, fleet, delivery} =
+  Fleet.update_delivery_location(fleet, delivery.id, "Picked up at Dosa House")
 {:ok, book, order} = OrderBook.advance_order(book, order.id)
 {:ok, fleet, delivery} = Fleet.advance_delivery(fleet, delivery.id)
 {:ok, fleet, delivery} = Fleet.update_delivery_location(fleet, delivery.id, "Two streets away")
@@ -40,5 +41,6 @@ IO.puts("Assigned #{courier.name} (#{courier.vehicle}) to order #{order.id}.")
 IO.puts("Order is #{order.status}; delivery is #{delivery.status}. Tracking timeline:")
 
 Enum.each(delivery.history, fn event ->
-  IO.puts("  #{event.seq}. #{event.status}#{if event.location, do: " — #{event.location}", else: ""}")
+  suffix = if event.location, do: " - #{event.location}", else: ""
+  IO.puts("  #{event.seq}. #{event.status}#{suffix}")
 end)
