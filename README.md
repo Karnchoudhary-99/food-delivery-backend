@@ -3,13 +3,13 @@
 A food delivery backend in Elixir: restaurant and menu catalogues, order
 placement with item totals, order lifecycle tracking, and courier assignment.
 
-> Status: restaurant + menu catalogue done; orders and courier assignment next.
+> Status: catalogue and orders done; courier assignment next.
 
 ## Roadmap
 
 - [x] Project scaffold (Mix layout, CI, README)
 - [x] Restaurant + menu catalogue (CRUD, search, availability)
-- [ ] Orders (placement, totals, lifecycle: placed → confirmed → preparing → out for delivery → delivered)
+- [x] Orders (placement, totals, lifecycle: placed → confirmed → preparing → out for delivery → delivered)
 - [ ] Courier assignment + delivery tracking
 - [ ] Self-review checklist, then public
 
@@ -54,6 +54,47 @@ Rules enforced by the catalogue:
   `:not_found`. Invalid input never mutates the catalogue.
 - Search matches name or cuisine case-insensitively, with optional
   `:cuisine` and `:open_only` filters.
+
+## Orders
+
+Orders live in a plain-value `OrderBook`, validated against a `Catalogue`
+at placement time:
+
+```elixir
+alias FoodDeliveryBackend.{Catalogue, OrderBook, Sample}
+
+catalogue = Sample.catalogue()
+dosa_house = Catalogue.search_restaurants(catalogue, "dosa") |> hd()
+dosa = Catalogue.list_menu_items(catalogue, dosa_house.id) |> hd()
+
+{:ok, book, order} =
+  OrderBook.place_order(OrderBook.new(), catalogue, dosa_house.id, [
+    %{item_id: dosa.id, quantity: 5}
+  ])
+
+order.total_cents # => 750 (600 items + 150 delivery fee)
+order.status      # => :placed
+
+{:ok, book, order} = OrderBook.advance_order(book, order.id)
+order.status      # => :confirmed
+```
+
+Rules enforced at placement:
+
+- The restaurant must exist and be open; the order must have at least
+  one line.
+- Every line must name an available item belonging to that restaurant;
+  unknown, foreign and sold-out items are rejected.
+- Quantities must be positive integers; the items total must clear the
+  restaurant's minimum order.
+- Line prices are snapshots from the menu at order time, so later price
+  changes never rewrite a placed order.
+- A failed placement changes nothing — not even the next order id.
+
+Lifecycle: `placed → confirmed → preparing → out for delivery →
+delivered`. An order can be cancelled from `placed`, `confirmed` or
+`preparing`; once it is out for delivery it must run to completion.
+Run the demo with `mix run examples/order_demo.exs`.
 
 ## License
 
