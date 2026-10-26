@@ -3,14 +3,14 @@
 A food delivery backend in Elixir: restaurant and menu catalogues, order
 placement with item totals, order lifecycle tracking, and courier assignment.
 
-> Status: catalogue and orders done; courier assignment next.
+> Status: catalogue, orders and courier assignment done; self-review next.
 
 ## Roadmap
 
 - [x] Project scaffold (Mix layout, CI, README)
 - [x] Restaurant + menu catalogue (CRUD, search, availability)
 - [x] Orders (placement, totals, lifecycle: placed → confirmed → preparing → out for delivery → delivered)
-- [ ] Courier assignment + delivery tracking
+- [x] Courier assignment + delivery tracking
 - [ ] Self-review checklist, then public
 
 ## Quick start
@@ -95,6 +95,41 @@ Lifecycle: `placed → confirmed → preparing → out for delivery →
 delivered`. An order can be cancelled from `placed`, `confirmed` or
 `preparing`; once it is out for delivery it must run to completion.
 Run the demo with `mix run examples/order_demo.exs`.
+
+## Couriers
+
+Couriers live in a plain-value `Fleet`, alongside their deliveries:
+
+```elixir
+alias FoodDeliveryBackend.{Fleet, OrderBook}
+
+{:ok, fleet, courier} = Fleet.add_courier(Fleet.new(), %{name: "Asha", vehicle: :scooter})
+{:ok, fleet, delivery} = Fleet.assign_courier(fleet, order, courier.id)
+delivery.status # => :assigned
+
+{:ok, fleet, delivery} = Fleet.advance_delivery(fleet, delivery.id)
+{:ok, fleet, delivery} = Fleet.update_delivery_location(fleet, delivery.id, "Two streets away")
+delivery.history # => [%{seq: 1, status: :assigned, ...}, ...]
+```
+
+Rules enforced by the fleet:
+
+- A courier's vehicle must be `:bike`, `:scooter` or `:car`; names must
+  be non-blank.
+- An order can only take a courier once it is `:preparing` or
+  `:out_for_delivery` — earlier orders are not ready, finished ones are
+  done.
+- A courier takes one active delivery at a time, and an order takes one
+  active delivery at a time; busy couriers and double assignments fail
+  with `:courier_busy` and `:already_assigned`.
+- Delivery lifecycle: `assigned → picked_up → in_transit → delivered`.
+  A delivery can be cancelled from `assigned` or `picked_up` only.
+- Completing or cancelling a delivery frees its courier for the next
+  order, and a cancelled delivery frees the order for a fresh assignment.
+- Every status change and location update appends a sequenced event to
+  the delivery's history, so the tracking timeline is the delivery itself.
+
+Run the demo with `mix run examples/delivery_demo.exs`.
 
 ## License
 
