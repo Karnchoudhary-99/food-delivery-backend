@@ -3,7 +3,7 @@
 A food delivery backend in Elixir: restaurant and menu catalogues, order
 placement with item totals, order lifecycle tracking, and courier assignment.
 
-> Status: catalogue, orders and courier assignment done; self-review next.
+> Status: complete — catalogue, orders and courier assignment + delivery tracking.
 
 ## Roadmap
 
@@ -11,7 +11,7 @@ placement with item totals, order lifecycle tracking, and courier assignment.
 - [x] Restaurant + menu catalogue (CRUD, search, availability)
 - [x] Orders (placement, totals, lifecycle: placed → confirmed → preparing → out for delivery → delivered)
 - [x] Courier assignment + delivery tracking
-- [ ] Self-review checklist, then public
+- [x] Self-review checklist, then public
 
 ## Quick start
 
